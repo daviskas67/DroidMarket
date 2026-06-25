@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="themeBackground" format="color" />
+    <attr name="themeCardBg" format="color" />
+    <attr name="themeCardBgAlt" format="color" />
+    <attr name="themeActionbarBg" format="color" />
+    <attr name="themeTextPrimary" format="color" />
+    <attr name="themeTextSecondary" format="color" />
+    <attr name="themeTextTertiary" format="color" />
+    <attr name="themeAccent" format="color" />
+    <attr name="themeDivider" format="color" />
+    <attr name="themeSearchBg" format="color" />
+    <attr name="themeSearchText" format="color" />
+    <attr name="themeSearchHint" format="color" />
+    <attr name="themeBtnBg" format="color" />
+    <attr name="themeBtnText" format="color" />
+    <attr name="themeCardBgDrawable" format="reference" />
+    <attr name="themeCountBg" format="color" />
+</resources>

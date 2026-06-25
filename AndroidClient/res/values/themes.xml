@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.DroidMarket" parent="@android:style/Theme.Black.NoTitleBar">
+        <item name="themeBackground">@color/holo_background</item>
+        <item name="themeCardBg">@color/holo_card_bg</item>
+        <item name="themeCardBgAlt">@color/holo_card_bg_alt</item>
+        <item name="themeCardBgDrawable">@color/holo_card_bg</item>
+        <item name="themeActionbarBg">@color/holo_actionbar_bg</item>
+        <item name="themeTextPrimary">@color/holo_text_primary</item>
+        <item name="themeTextSecondary">@color/holo_text_secondary</item>
+        <item name="themeTextTertiary">@color/holo_text_tertiary</item>
+        <item name="themeAccent">@color/holo_accent</item>
+        <item name="themeDivider">@color/holo_divider</item>
+        <item name="themeSearchBg">@color/holo_search_bg</item>
+        <item name="themeSearchText">@color/holo_search_text</item>
+        <item name="themeSearchHint">@color/holo_search_hint</item>
+        <item name="themeBtnBg">@color/holo_btn_bg</item>
+        <item name="themeBtnText">@color/holo_btn_text</item>
+        <item name="themeCountBg">@color/holo_count_bg</item>
+    </style>
+
+    <style name="Theme.DroidMarket.Material" parent="@android:style/Theme.Light.NoTitleBar">
+        <item name="themeBackground">@color/material_background</item>
+        <item name="themeCardBg">@color/material_card_bg</item>
+        <item name="themeCardBgAlt">@color/material_card_bg_alt</item>
+        <item name="themeCardBgDrawable">@drawable/card_material</item>
+        <item name="themeActionbarBg">@color/material_actionbar_bg</item>
+        <item name="themeTextPrimary">@color/material_text_primary</item>
+        <item name="themeTextSecondary">@color/material_text_secondary</item>
+        <item name="themeTextTertiary">@color/material_text_tertiary</item>
+        <item name="themeAccent">@color/material_accent</item>
+        <item name="themeDivider">@color/material_divider</item>
+        <item name="themeSearchBg">@color/material_search_bg</item>
+        <item name="themeSearchText">@color/material_search_text</item>
+        <item name="themeSearchHint">@color/material_search_hint</item>
+        <item name="themeBtnBg">@color/material_btn_bg</item>
+        <item name="themeBtnText">@color/material_btn_text</item>
+        <item name="themeCountBg">@color/material_count_bg</item>
+    </style>
+</resources>

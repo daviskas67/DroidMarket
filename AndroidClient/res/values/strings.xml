@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">DroidMarket</string>
+    <string name="app_detail">App Info</string>
+    <string name="loading">Loading...</string>
+    <string name="error">Error</string>
+    <string name="retry">Retry</string>
+    <string name="download">Download</string>
+    <string name="versions">Versions</string>
+    <string name="downloads">Downloads</string>
+    <string name="size">Size</string>
+    <string name="android">Android</string>
+    <string name="no_apps">No apps found</string>
+    <string name="search_hint">Search apps...</string>
+    <string name="downloading">Downloading...</string>
+    <string name="download_complete">Download complete</string>
+    <string name="server_url">http://barbaros.serveousercontent.com</string>
+</resources>

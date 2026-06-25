@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.log
+
+# Config & data
+config.json
+.secret_key
+apps_data.json
+users.json
+user_sessions.json
+suggestions.db
+stats_history.json
+audit_log.json
+metadata.json
+
+# Temp / uploads
+apks/
+temp_unzip/
+static/icons/
+icon.jpg
+logo.png
+
+# Android build
+AndroidClient/build/
+AndroidClient/obj/
+AndroidClient/bin/
+AndroidClient/gen/
+*.apk
+*.jar
+*.dex
+
+# Archives
+*.rar
+*.zip
+*.7z
+
+# OS
+Thumbs.db
+.DS_Store
