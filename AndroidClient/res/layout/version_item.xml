@@ -3,29 +3,31 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="?attr/themeCardBgDrawable">
+    android:background="#ffffffff">
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingLeft="16dp"
-        android:paddingTop="12dp"
-        android:paddingRight="16dp"
-        android:paddingBottom="12dp">
+        android:paddingLeft="12dp"
+        android:paddingTop="10dp"
+        android:paddingRight="12dp"
+        android:paddingBottom="10dp">
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:gravity="center_vertical">
 
             <TextView
                 android:id="@+id/ver_version"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="?attr/themeAccent"
-                android:textSize="14sp" />
+                android:textColor="#ff96aa39"
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="fill_parent"
@@ -37,7 +39,7 @@
                     android:id="@+id/ver_size"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="?attr/themeTextTertiary"
+                    android:textColor="#ff999999"
                     android:textSize="12sp"
                     android:layout_marginRight="12dp" />
 
@@ -45,7 +47,7 @@
                     android:id="@+id/ver_android"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="?attr/themeTextTertiary"
+                    android:textColor="#ff999999"
                     android:textSize="12sp" />
             </LinearLayout>
         </LinearLayout>
@@ -55,13 +57,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/download"
-            android:textColor="?attr/themeBtnText"
-            android:background="?attr/themeBtnBg"
+            android:textColor="#ffffffff"
+            android:background="#ff96aa39"
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
-            android:paddingTop="6dp"
-            android:paddingBottom="6dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
             android:textSize="12sp" />
     </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:background="#ffdddddd"
+        android:layout_marginLeft="12dp" />
 
 </LinearLayout>

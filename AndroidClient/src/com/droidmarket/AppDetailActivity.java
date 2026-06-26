@@ -169,7 +169,7 @@ public class AppDetailActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add(0, 1, 0, isFavorite() ? "Unfavorite" : "Favorite").setIcon(android.R.drawable.ic_menu_myplaces);
-        menu.add(0, 2, 0, "Share Link").setIcon(android.R.drawable.ic_menu_share);
+        menu.add(0, 2, 0, "Share Link").setIcon(R.drawable.ic_menu_market_share);
         menu.add(0, 3, 0, "Open in Browser").setIcon(android.R.drawable.ic_menu_compass);
         menu.add(0, 4, 0, "App Notes").setIcon(0);
         menu.add(0, 5, 0, "Rate App").setIcon(0);

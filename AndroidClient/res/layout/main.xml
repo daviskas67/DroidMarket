@@ -5,67 +5,87 @@
     android:orientation="vertical"
     android:background="?attr/themeBackground">
 
+    <!-- ═══════ Original Android Market Action Bar ═══════ -->
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="48dp"
+        android:layout_height="41dp"
         android:background="?attr/themeActionbarBg"
-        android:gravity="center_vertical"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp">
+        android:gravity="center_vertical">
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/app_name"
-            android:textColor="?attr/themeTextPrimary"
-            android:textSize="18sp" />
+            android:textColor="#ffffffff"
+            android:textSize="18sp"
+            android:paddingLeft="12dp" />
 
-        <TextView
-            android:id="@+id/count_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            android:paddingTop="2dp"
-            android:paddingBottom="2dp"
-            android:background="?attr/themeCountBg"
-            android:textColor="?attr/themeTextSecondary"
-            android:textSize="11sp" />
+        <ImageView
+            android:id="@+id/menu_search_btn"
+            android:layout_width="48dp"
+            android:layout_height="fill_parent"
+            android:src="@android:drawable/ic_search_category_default"
+            android:scaleType="center"
+            android:padding="10dp" />
+
+        <ImageView
+            android:id="@+id/menu_more_btn"
+            android:layout_width="48dp"
+            android:layout_height="fill_parent"
+            android:src="@android:drawable/ic_menu_more"
+            android:scaleType="center"
+            android:padding="10dp" />
     </LinearLayout>
 
+    <!-- Search Bar -->
     <EditText
         android:id="@+id/search_input"
         android:layout_width="fill_parent"
-        android:layout_height="40dp"
+        android:layout_height="36dp"
         android:hint="@string/search_hint"
         android:paddingLeft="12dp"
         android:paddingRight="12dp"
-        android:background="?attr/themeSearchBg"
-        android:textColor="?attr/themeSearchText"
-        android:textColorHint="?attr/themeSearchHint"
-        android:textSize="14sp"
-        android:singleLine="true" />
+        android:background="#ffffffff"
+        android:textColor="#ff555555"
+        android:textColorHint="#ff999999"
+        android:textSize="13sp"
+        android:singleLine="true"
+        android:layout_margin="6dp" />
+
+    <!-- App Count / Section Header -->
+    <TextView
+        android:id="@+id/section_header"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#ffbfbfbf"
+        android:textColor="#ffffffff"
+        android:textSize="13sp"
+        android:paddingLeft="10dp"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
+        android:visibility="gone" />
 
     <ListView
         android:id="@android:id/list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_weight="1"
-        android:divider="?attr/themeDivider"
-        android:dividerHeight="1px"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp"
         android:listSelector="@android:drawable/list_selector_background"
         android:cacheColorHint="?attr/themeBackground"
-        android:paddingTop="0dp"
-        android:paddingBottom="0dp" />
+        android:fadingEdge="none"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp" />
 
     <Button
         android:id="@+id/retry_button"
         android:layout_width="fill_parent"
         android:layout_height="48dp"
         android:text="@string/retry"
-        android:textColor="?attr/themeAccent"
-        android:background="?attr/themeCardBg"
+        android:textColor="@color/market_accent"
+        android:background="#ffffffff"
         android:visibility="gone"
         android:textSize="14sp" />
 

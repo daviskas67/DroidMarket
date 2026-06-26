@@ -57,7 +57,7 @@ public class MainActivity extends ListActivity {
     private ArrayList<AppInfo> allApps;
     private EditText searchInput;
     private Button retryButton;
-    private TextView countText;
+    private TextView sectionHeader;
     private ImageLoader imageLoader;
     private int sortMode;
     private LoadAppsTask loadAppsTask;
@@ -82,7 +82,7 @@ public class MainActivity extends ListActivity {
 
         searchInput = (EditText) findViewById(R.id.search_input);
         retryButton = (Button) findViewById(R.id.retry_button);
-        countText = (TextView) findViewById(R.id.count_text);
+        sectionHeader = (TextView) findViewById(R.id.section_header);
         imageLoader = new ImageLoader();
         sortMode = 0;
         filterMode = 0;
@@ -529,7 +529,8 @@ public class MainActivity extends ListActivity {
         }
 
         adapter.setData(filtered);
-        countText.setText(String.valueOf(filtered.size()));
+        sectionHeader.setText(filtered.size() + " apps");
+        sectionHeader.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -544,16 +545,17 @@ public class MainActivity extends ListActivity {
         menu.add(0, 8, 0, "Android Compatible").setIcon(0);
         menu.add(0, 9, 0, "Check Updates").setIcon(android.R.drawable.ic_menu_compass);
         menu.add(0, 10, 0, "Recently Viewed").setIcon(android.R.drawable.ic_menu_compass);
-        menu.add(0, 11, 0, "Downloads").setIcon(android.R.drawable.ic_menu_compass);
-        menu.add(0, 12, 0, "Installed Apps").setIcon(android.R.drawable.ic_menu_compass);
+        menu.add(0, 11, 0, "Downloads").setIcon(R.drawable.ic_menu_bag_market);
+        menu.add(0, 12, 0, "Installed Apps").setIcon(R.drawable.ic_menu_market_myapps);
         menu.add(0, 13, 0, "Auto-Refresh: " + (autoRefreshEnabled ? "ON" : "OFF")).setIcon(0);
         menu.add(0, 14, 0, "Export Favorites").setIcon(0);
         menu.add(0, 15, 0, "Import Favorites").setIcon(0);
         menu.add(0, 16, 0, "Clear All Data").setIcon(0);
         menu.add(0, 17, 0, "About").setIcon(android.R.drawable.ic_menu_info_details);
         String curTheme = ThemeManager.getCurrent(this);
-        String themeLabel = "Holo";
-        if ("material".equals(curTheme)) themeLabel = "Material";
+        String themeLabel = "Market";
+        if ("holo".equals(curTheme)) themeLabel = "Holo";
+        else if ("material".equals(curTheme)) themeLabel = "Material";
         else if ("amoled".equals(curTheme)) themeLabel = "AMOLED";
         menu.add(0, 18, 0, "Theme: " + themeLabel).setIcon(android.R.drawable.ic_menu_gallery);
         menu.add(0, 19, 0, "Server: " + ServerManager.getActiveName(this))
@@ -862,7 +864,8 @@ public class MainActivity extends ListActivity {
                 filterMode = 0;
                 updatableApps = null;
                 adapter.setData(result);
-                countText.setText(String.valueOf(result.size()));
+                sectionHeader.setText(result.size() + " apps");
+                sectionHeader.setVisibility(View.VISIBLE);
                 retryButton.setVisibility(View.GONE);
                 scanInstalledPackages();
 
@@ -1034,11 +1037,11 @@ public class MainActivity extends ListActivity {
                 holder.type.setVisibility(View.VISIBLE);
                 holder.type.setText(app.type.toUpperCase());
                 if ("xapk".equals(app.type)) {
-                    holder.type.setBackgroundColor(0xFF2980B9);
+                    holder.type.setBackgroundColor(0xFF96AA39);
                 } else if ("obb".equals(app.type)) {
-                    holder.type.setBackgroundColor(0xFFE67E22);
+                    holder.type.setBackgroundColor(0xFF666666);
                 } else {
-                    holder.type.setBackgroundColor(0xFF888888);
+                    holder.type.setBackgroundColor(0xFF999999);
                 }
             } else {
                 holder.type.setVisibility(View.GONE);
@@ -1053,10 +1056,10 @@ public class MainActivity extends ListActivity {
             if (installedVer != null) {
                 if (!installedVer.equals(app.version)) {
                     holder.date.setText("Update: v" + app.version);
-                    holder.date.setTextColor(0xFFE67E22);
+                    holder.date.setTextColor(0xFF96AA39);
                 } else {
                     holder.date.setText("Installed");
-                    holder.date.setTextColor(0xFF27AE60);
+                    holder.date.setTextColor(0xFF809130);
                 }
                 holder.date.setVisibility(View.VISIBLE);
             } else if (app.addedDate != null && app.addedDate.length() > 0) {

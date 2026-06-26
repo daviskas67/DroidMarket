@@ -3,65 +3,71 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:background="?attr/themeCardBgDrawable">
+    android:background="#ffffffff">
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingLeft="16dp"
-        android:paddingTop="12dp"
-        android:paddingRight="16dp"
-        android:paddingBottom="12dp">
+        android:paddingLeft="8dp"
+        android:paddingTop="8dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="8dp">
 
+        <!-- App Icon 48x48 -->
         <ImageView
             android:id="@+id/app_icon"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_marginRight="12dp"
+            android:layout_marginRight="10dp"
             android:scaleType="fitCenter"
-            android:background="?attr/themeCardBgAlt" />
+            android:background="#fff5f5f5" />
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:gravity="center_vertical">
 
+            <!-- App Name - bold, 15sp, dark gray -->
             <TextView
                 android:id="@+id/app_name"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:textColor="?attr/themeTextPrimary"
+                android:textColor="#ff404040"
                 android:textSize="15sp"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:textStyle="bold" />
 
+            <!-- Developer / Package - 12sp, gray -->
             <TextView
                 android:id="@+id/app_package"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:textColor="?attr/themeTextSecondary"
-                android:textSize="11sp"
+                android:textColor="#ff999999"
+                android:textSize="12sp"
                 android:singleLine="true"
                 android:layout_marginTop="1dp" />
 
+            <!-- Info row: type, version, size, android, date -->
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginTop="4dp">
+                android:layout_marginTop="2dp">
 
                 <TextView
                     android:id="@+id/app_type"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="10sp"
-                    android:textColor="#FFFFFF"
+                    android:textColor="#ffffffff"
                     android:paddingLeft="4dp"
                     android:paddingRight="4dp"
                     android:paddingTop="1dp"
                     android:paddingBottom="1dp"
-                    android:background="#888888"
+                    android:background="#ff888888"
                     android:layout_marginRight="6dp"
                     android:visibility="gone" />
 
@@ -69,7 +75,7 @@
                     android:id="@+id/app_version"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="?attr/themeAccent"
+                    android:textColor="#ff96aa39"
                     android:textSize="12sp"
                     android:layout_marginRight="12dp" />
 
@@ -77,7 +83,7 @@
                     android:id="@+id/app_size"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="?attr/themeTextTertiary"
+                    android:textColor="#ff999999"
                     android:textSize="12sp"
                     android:layout_marginRight="12dp" />
 
@@ -85,18 +91,26 @@
                     android:id="@+id/app_android"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="?attr/themeTextTertiary"
+                    android:textColor="#ff999999"
                     android:textSize="12sp"
                     android:layout_marginRight="12dp" />
+
                 <TextView
                     android:id="@+id/app_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="?attr/themeTextTertiary"
+                    android:textColor="#ffbbbbbb"
                     android:textSize="11sp" />
             </LinearLayout>
 
         </LinearLayout>
     </LinearLayout>
+
+    <!-- Separator -->
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1px"
+        android:background="#ffdddddd"
+        android:layout_marginLeft="8dp" />
 
 </LinearLayout>

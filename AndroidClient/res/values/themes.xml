@@ -1,6 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.DroidMarket" parent="@android:style/Theme.Black.NoTitleBar">
+    <style name="Theme.DroidMarket" parent="@android:style/Theme.Light.NoTitleBar">
+        <item name="themeBackground">@color/market_background</item>
+        <item name="themeCardBg">@color/market_card_bg</item>
+        <item name="themeCardBgAlt">@color/market_card_bg_alt</item>
+        <item name="themeCardBgDrawable">@color/market_card_bg</item>
+        <item name="themeActionbarBg">@color/market_actionbar_bg</item>
+        <item name="themeTextPrimary">@color/market_text_dark</item>
+        <item name="themeTextSecondary">@color/market_text_primary</item>
+        <item name="themeTextTertiary">@color/market_text_secondary</item>
+        <item name="themeAccent">@color/market_accent</item>
+        <item name="themeDivider">@color/market_divider</item>
+        <item name="themeSearchBg">@color/market_search_bg</item>
+        <item name="themeSearchText">@color/market_search_text</item>
+        <item name="themeSearchHint">@color/market_search_hint</item>
+        <item name="themeBtnBg">@color/market_btn_bg</item>
+        <item name="themeBtnText">@color/market_btn_text</item>
+        <item name="themeCountBg">@color/market_count_bg</item>
+    </style>
+
+    <style name="Theme.DroidMarket.Holo" parent="@android:style/Theme.Black.NoTitleBar">
         <item name="themeBackground">@color/holo_background</item>
         <item name="themeCardBg">@color/holo_card_bg</item>
         <item name="themeCardBgAlt">@color/holo_card_bg_alt</item>
@@ -17,25 +36,6 @@
         <item name="themeBtnBg">@color/holo_btn_bg</item>
         <item name="themeBtnText">@color/holo_btn_text</item>
         <item name="themeCountBg">@color/holo_count_bg</item>
-    </style>
-
-    <style name="Theme.DroidMarket.AMOLED" parent="@android:style/Theme.Black.NoTitleBar">
-        <item name="themeBackground">@color/amoled_background</item>
-        <item name="themeCardBg">@color/amoled_card_bg</item>
-        <item name="themeCardBgAlt">@color/amoled_card_bg_alt</item>
-        <item name="themeCardBgDrawable">@color/amoled_card_bg</item>
-        <item name="themeActionbarBg">@color/amoled_actionbar_bg</item>
-        <item name="themeTextPrimary">@color/amoled_text_primary</item>
-        <item name="themeTextSecondary">@color/amoled_text_secondary</item>
-        <item name="themeTextTertiary">@color/amoled_text_tertiary</item>
-        <item name="themeAccent">@color/amoled_accent</item>
-        <item name="themeDivider">@color/amoled_divider</item>
-        <item name="themeSearchBg">@color/amoled_search_bg</item>
-        <item name="themeSearchText">@color/amoled_search_text</item>
-        <item name="themeSearchHint">@color/amoled_search_hint</item>
-        <item name="themeBtnBg">@color/amoled_btn_bg</item>
-        <item name="themeBtnText">@color/amoled_btn_text</item>
-        <item name="themeCountBg">@color/amoled_count_bg</item>
     </style>
 
     <style name="Theme.DroidMarket.Material" parent="@android:style/Theme.Light.NoTitleBar">
@@ -55,5 +55,24 @@
         <item name="themeBtnBg">@color/material_btn_bg</item>
         <item name="themeBtnText">@color/material_btn_text</item>
         <item name="themeCountBg">@color/material_count_bg</item>
+    </style>
+
+    <style name="Theme.DroidMarket.AMOLED" parent="@android:style/Theme.Black.NoTitleBar">
+        <item name="themeBackground">@color/amoled_background</item>
+        <item name="themeCardBg">@color/amoled_card_bg</item>
+        <item name="themeCardBgAlt">@color/amoled_card_bg_alt</item>
+        <item name="themeCardBgDrawable">@color/amoled_card_bg</item>
+        <item name="themeActionbarBg">@color/amoled_actionbar_bg</item>
+        <item name="themeTextPrimary">@color/amoled_text_primary</item>
+        <item name="themeTextSecondary">@color/amoled_text_secondary</item>
+        <item name="themeTextTertiary">@color/amoled_text_tertiary</item>
+        <item name="themeAccent">@color/amoled_accent</item>
+        <item name="themeDivider">@color/amoled_divider</item>
+        <item name="themeSearchBg">@color/amoled_search_bg</item>
+        <item name="themeSearchText">@color/amoled_search_text</item>
+        <item name="themeSearchHint">@color/amoled_search_hint</item>
+        <item name="themeBtnBg">@color/amoled_btn_bg</item>
+        <item name="themeBtnText">@color/amoled_btn_text</item>
+        <item name="themeCountBg">@color/amoled_count_bg</item>
     </style>
 </resources>

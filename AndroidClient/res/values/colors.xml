@@ -1,6 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Holo Dark -->
+    <!-- ════════════════════════════════════════════
+         Original Android Market v3.4.4 Design
+         ════════════════════════════════════════════ -->
+    <color name="market_background">#ffededed</color>
+    <color name="market_card_bg">#ffffffff</color>
+    <color name="market_card_bg_alt">#fff5f5f5</color>
+    <color name="market_actionbar_bg">#ff444444</color>
+    <color name="market_text_primary">#ff555555</color>
+    <color name="market_text_secondary">#ff999999</color>
+    <color name="market_text_tertiary">#ffbbbbbb</color>
+    <color name="market_text_dark">#ff404040</color>
+    <color name="market_accent">#ff96aa39</color>
+    <color name="market_accent_dark">#ff809130</color>
+    <color name="market_btn_bg">#ff96aa39</color>
+    <color name="market_btn_text">#ffffffff</color>
+    <color name="market_divider">#ffdddddd</color>
+    <color name="market_section_header_bg">#ffbfbfbf</color>
+    <color name="market_section_header_text">#ffffffff</color>
+    <color name="market_search_bg">#ffffffff</color>
+    <color name="market_search_text">#ff555555</color>
+    <color name="market_search_hint">#ff999999</color>
+    <color name="market_count_bg">#ffeeeeee</color>
+    <color name="market_shadow">#bb000000</color>
+    <color name="market_white">#ffffffff</color>
+    <color name="market_grey">#ff999999</color>
+    <color name="market_darkgrey">#ff666666</color>
+
+    <!-- Holo Dark (preserved for theme cycling) -->
     <color name="holo_background">#000000</color>
     <color name="holo_card_bg">#111111</color>
     <color name="holo_card_bg_alt">#1a1a1a</color>

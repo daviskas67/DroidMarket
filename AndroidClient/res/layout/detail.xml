@@ -3,26 +3,27 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    android:background="?attr/themeBackground">
+    android:background="#ffeeeeee">
 
+    <!-- ═══════ Detail Header ═══════ -->
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="16dp"
-        android:background="?attr/themeCardBgDrawable">
+        android:padding="12dp"
+        android:background="#ffffffff">
 
         <ImageView
             android:id="@+id/detail_icon"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginRight="14dp"
             android:scaleType="fitCenter"
-            android:background="?attr/themeCardBgAlt" />
+            android:background="#fff5f5f5" />
 
         <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:layout_weight="1"
             android:orientation="vertical"
             android:gravity="center_vertical">
@@ -31,61 +32,43 @@
                 android:id="@+id/detail_name"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:textColor="?attr/themeTextPrimary"
-                android:textSize="18sp" />
+                android:textColor="#ff404040"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/detail_package"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:textColor="?attr/themeTextSecondary"
-                android:textSize="12sp"
+                android:textColor="#ff999999"
+                android:textSize="13sp"
                 android:singleLine="true"
                 android:layout_marginTop="2dp" />
 
         </LinearLayout>
     </LinearLayout>
 
+    <!-- Updated / Date -->
     <TextView
         android:id="@+id/detail_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="?attr/themeTextTertiary"
-        android:textSize="11sp"
-        android:paddingLeft="16dp"
+        android:textColor="#ff999999"
+        android:textSize="12sp"
+        android:paddingLeft="12dp"
         android:paddingTop="8dp"
         android:paddingBottom="4dp"
-        android:background="?attr/themeCardBgDrawable"
+        android:background="#ffffffff"
         android:visibility="gone" />
 
+    <!-- Downloads + Versions Stats -->
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp"
-        android:background="?attr/themeCardBgDrawable">
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
-            <TextView
-                android:id="@+id/detail_versions_count"
-                android:textSize="22sp"
-                android:textColor="?attr/themeAccent"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <TextView
-                android:text="@string/versions"
-                android:textSize="11sp"
-                android:textColor="?attr/themeTextTertiary"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp" />
-        </LinearLayout>
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:background="#ffffffff">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -95,40 +78,63 @@
             android:orientation="vertical">
             <TextView
                 android:id="@+id/detail_downloads"
-                android:textSize="22sp"
-                android:textColor="?attr/themeAccent"
+                android:textSize="24sp"
+                android:textColor="#ff96aa39"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
             <TextView
                 android:text="@string/downloads"
-                android:textSize="11sp"
-                android:textColor="?attr/themeTextTertiary"
+                android:textSize="12sp"
+                android:textColor="#ff999999"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/detail_versions_count"
+                android:textSize="24sp"
+                android:textColor="#ff96aa39"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:text="@string/versions"
+                android:textSize="12sp"
+                android:textColor="#ff999999"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp" />
         </LinearLayout>
     </LinearLayout>
 
+    <!-- Section Header: Versions -->
     <TextView
         android:id="@+id/versions_header"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="16dp"
-        android:paddingTop="12dp"
-        android:paddingRight="16dp"
-        android:paddingBottom="12dp"
-        android:textSize="14sp"
-        android:textColor="?attr/themeAccent"
-        android:background="?attr/themeCardBgDrawable" />
+        android:paddingLeft="12dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingRight="12dp"
+        android:textSize="13sp"
+        android:textColor="#ffffffff"
+        android:background="#ffbfbfbf"
+        android:textStyle="bold" />
 
     <ListView
         android:id="@+id/version_list"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:divider="?attr/themeDivider"
-        android:dividerHeight="1px"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp"
         android:listSelector="@android:drawable/list_selector_background"
-        android:cacheColorHint="?attr/themeBackground" />
+        android:cacheColorHint="#ffeeeeee" />
 
 </LinearLayout>
