@@ -5,12 +5,21 @@
     android:orientation="vertical"
     android:background="?attr/themeBackground">
 
-    <!-- ═══════ Original Android Market Action Bar ═══════ -->
+    <!-- ═══════ Action Bar ═══════ -->
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="41dp"
-        android:background="?attr/themeActionbarBg"
-        android:gravity="center_vertical">
+        android:layout_height="44dp"
+        android:background="#ff009999"
+        android:gravity="center_vertical"
+        android:paddingLeft="8dp"
+        android:paddingRight="4dp">
+
+        <ImageView
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@drawable/ic_menu_bag_market"
+            android:scaleType="fitCenter"
+            android:layout_marginRight="6dp" />
 
         <TextView
             android:layout_width="0dp"
@@ -18,24 +27,24 @@
             android:layout_weight="1"
             android:text="@string/app_name"
             android:textColor="#ffffffff"
-            android:textSize="18sp"
-            android:paddingLeft="12dp" />
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/menu_search_btn"
-            android:layout_width="48dp"
+            android:layout_width="40dp"
             android:layout_height="fill_parent"
             android:src="@android:drawable/ic_search_category_default"
             android:scaleType="center"
-            android:padding="10dp" />
+            android:padding="8dp" />
 
         <ImageView
             android:id="@+id/menu_more_btn"
-            android:layout_width="48dp"
+            android:layout_width="40dp"
             android:layout_height="fill_parent"
             android:src="@android:drawable/ic_menu_more"
             android:scaleType="center"
-            android:padding="10dp" />
+            android:padding="8dp" />
     </LinearLayout>
 
     <!-- Search Bar -->

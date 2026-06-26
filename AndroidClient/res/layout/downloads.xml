@@ -5,14 +5,21 @@
     android:orientation="vertical"
     android:background="#ffededed">
 
-    <!-- Market Action Bar -->
+    <!-- Action Bar -->
     <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="41dp"
-        android:background="#ff444444"
+        android:layout_height="44dp"
+        android:background="#ff009999"
         android:gravity="center_vertical"
-        android:paddingLeft="12dp"
-        android:paddingRight="8dp">
+        android:paddingLeft="8dp"
+        android:paddingRight="4dp">
+
+        <ImageView
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@drawable/ic_menu_bag_market"
+            android:scaleType="fitCenter"
+            android:layout_marginRight="6dp" />
 
         <TextView
             android:layout_width="0dp"
@@ -20,20 +27,21 @@
             android:layout_weight="1"
             android:text="My downloads"
             android:textColor="#ffffffff"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/clear_all_btn"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="28dp"
             android:text="Clear All"
             android:textSize="11sp"
-            android:textColor="#ff96aa39"
-            android:background="@android:drawable/btn_default_small"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            android:paddingTop="2dp"
-            android:paddingBottom="2dp" />
+            android:textColor="#ffffffff"
+            android:background="#ff96aa39"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="0dp"
+            android:paddingBottom="0dp" />
     </LinearLayout>
 
     <ListView

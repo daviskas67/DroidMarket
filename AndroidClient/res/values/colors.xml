@@ -27,6 +27,8 @@
     <color name="market_grey">#ff999999</color>
     <color name="market_darkgrey">#ff666666</color>
 
+    <color name="market_actionbar_bg_teal">#ff009999</color>
+
     <!-- Holo Dark (preserved for theme cycling) -->
     <color name="holo_background">#000000</color>
     <color name="holo_card_bg">#111111</color>
