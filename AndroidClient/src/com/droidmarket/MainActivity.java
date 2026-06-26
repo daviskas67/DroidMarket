@@ -1016,12 +1016,12 @@ public class MainActivity extends ListActivity {
                 holder = new ViewHolder();
                 holder.icon = (ImageView) convertView.findViewById(R.id.app_icon);
                 holder.name = (TextView) convertView.findViewById(R.id.app_name);
-                holder.pkg = (TextView) convertView.findViewById(R.id.app_package);
                 holder.type = (TextView) convertView.findViewById(R.id.app_type);
                 holder.version = (TextView) convertView.findViewById(R.id.app_version);
                 holder.size = (TextView) convertView.findViewById(R.id.app_size);
                 holder.android = (TextView) convertView.findViewById(R.id.app_android);
                 holder.date = (TextView) convertView.findViewById(R.id.app_date);
+                holder.installBtn = (Button) convertView.findViewById(R.id.app_install_btn);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
@@ -1031,7 +1031,6 @@ public class MainActivity extends ListActivity {
             AppInfo app = apps.get(position);
             MainActivity act = (MainActivity) context;
             holder.name.setText(app.name);
-            holder.pkg.setText(app.packageName);
 
             if (app.type != null && !app.type.equals("apk")) {
                 holder.type.setVisibility(View.VISIBLE);
@@ -1072,6 +1071,20 @@ public class MainActivity extends ListActivity {
                 holder.date.setVisibility(View.GONE);
             }
 
+            boolean showBtn = installedVer == null || !installedVer.equals(app.version);
+            if (showBtn) {
+                holder.installBtn.setVisibility(View.VISIBLE);
+                holder.installBtn.setText(installedVer != null ? "UPDATE" : "FREE");
+                final AppInfo fApp = app;
+                holder.installBtn.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        act.quickDownload(fApp);
+                    }
+                });
+            } else {
+                holder.installBtn.setVisibility(View.GONE);
+            }
+
             if (app.icon != null && app.icon.length() > 0) {
                 String iconUrl = ApiClient.getIconUrl(app.icon);
                 imageLoader.load(iconUrl, holder.icon);
@@ -1085,12 +1098,12 @@ public class MainActivity extends ListActivity {
         private static class ViewHolder {
             ImageView icon;
             TextView name;
-            TextView pkg;
             TextView type;
             TextView version;
             TextView size;
             TextView android;
             TextView date;
+            Button installBtn;
         }
     }
 }

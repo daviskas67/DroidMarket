@@ -5,11 +5,10 @@
     android:orientation="vertical"
     android:background="#ffeeeeee">
 
-    <!-- ═══════ Detail Header ═══════ -->
-    <LinearLayout
+    <!-- Detail Header -->
+    <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:padding="12dp"
         android:background="#ffffffff">
 
@@ -17,58 +16,55 @@
             android:id="@+id/detail_icon"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:layout_marginRight="14dp"
             android:scaleType="fitCenter"
             android:background="#fff5f5f5" />
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center_vertical">
+        <TextView
+            android:id="@+id/detail_name"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#ff404040"
+            android:layout_toRightOf="@+id/detail_icon"
+            android:layout_marginLeft="14dp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true" />
 
-            <TextView
-                android:id="@+id/detail_name"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:textColor="#ff404040"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+        <TextView
+            android:id="@+id/detail_package"
+            android:textSize="13sp"
+            android:textColor="#ff999999"
+            android:layout_toRightOf="@+id/detail_icon"
+            android:layout_below="@+id/detail_name"
+            android:layout_marginLeft="14dp"
+            android:layout_marginTop="2dp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true" />
 
-            <TextView
-                android:id="@+id/detail_package"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:textColor="#ff999999"
-                android:textSize="13sp"
-                android:singleLine="true"
-                android:layout_marginTop="2dp" />
+        <TextView
+            android:id="@+id/detail_date"
+            android:textSize="12sp"
+            android:textColor="#ff999999"
+            android:layout_toRightOf="@+id/detail_icon"
+            android:layout_below="@+id/detail_package"
+            android:layout_marginLeft="14dp"
+            android:layout_marginTop="2dp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+    </RelativeLayout>
 
-        </LinearLayout>
-    </LinearLayout>
-
-    <!-- Updated / Date -->
-    <TextView
-        android:id="@+id/detail_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#ff999999"
-        android:textSize="12sp"
-        android:paddingLeft="12dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="4dp"
-        android:background="#ffffffff"
-        android:visibility="gone" />
-
-    <!-- Downloads + Versions Stats -->
+    <!-- Stats -->
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
-        android:background="#ffffffff">
+        android:background="#ffffffff"
+        android:layout_marginTop="1px"
+        android:gravity="center">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -78,7 +74,7 @@
             android:orientation="vertical">
             <TextView
                 android:id="@+id/detail_downloads"
-                android:textSize="24sp"
+                android:textSize="22sp"
                 android:textColor="#ff96aa39"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
@@ -99,7 +95,7 @@
             android:orientation="vertical">
             <TextView
                 android:id="@+id/detail_versions_count"
-                android:textSize="24sp"
+                android:textSize="22sp"
                 android:textColor="#ff96aa39"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
@@ -113,19 +109,20 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- Section Header: Versions -->
+    <!-- Section: Versions -->
     <TextView
         android:id="@+id/versions_header"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="12dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp"
         android:paddingRight="12dp"
         android:textSize="13sp"
         android:textColor="#ffffffff"
         android:background="#ffbfbfbf"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:text="VERSIONS" />
 
     <ListView
         android:id="@+id/version_list"
