@@ -36,6 +36,13 @@ AndroidClient/gen/
 *.zip
 *.7z
 
+# Project junk
+how to.txt
+алкаш.txt
+*.properties
+debug.keystore
+web.config
+
 # OS
 Thumbs.db
 .DS_Store
