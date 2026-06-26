@@ -15,11 +15,11 @@ from telebot import apihelper
 # apihelper.proxy = {'https': 'http://127.0.0.1:7890'}
 
 # === КОНФИГ ===
-BOT_TOKEN = "8913738523:AAFYJnMDONISNLZ6xUWPpnUNRFTF3-n23NQ"
-SUGGESTIONS_FILE = "suggestions.json"
+BOT_TOKEN = os.environ.get("DROIDMARKET_BOT_TOKEN", "")
+SUGGESTIONS_FILE = os.environ.get("SUGGESTIONS_FILE", "suggestions.json")
 
 # ID АДМИНА — сюда вставь свой Telegram ID (можно узнать через @userinfobot)
-ADMIN_ID = 7812879448
+ADMIN_ID = int(os.environ.get("DROIDMARKET_ADMIN_ID", "0"))
 
 apihelper.CONNECT_TIMEOUT = 60
 apihelper.READ_TIMEOUT = 60

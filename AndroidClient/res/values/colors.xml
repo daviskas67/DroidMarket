@@ -33,4 +33,21 @@
     <color name="material_search_text">#212121</color>
     <color name="material_search_hint">#757575</color>
     <color name="material_count_bg">#e0e0e0</color>
+
+    <!-- AMOLED Pure Black -->
+    <color name="amoled_background">#000000</color>
+    <color name="amoled_card_bg">#000000</color>
+    <color name="amoled_card_bg_alt">#0a0a0a</color>
+    <color name="amoled_actionbar_bg">#0a0a0a</color>
+    <color name="amoled_text_primary">#ffffff</color>
+    <color name="amoled_text_secondary">#aaaaaa</color>
+    <color name="amoled_text_tertiary">#555555</color>
+    <color name="amoled_accent">#00e676</color>
+    <color name="amoled_btn_bg">#00e676</color>
+    <color name="amoled_btn_text">#000000</color>
+    <color name="amoled_divider">#0a0a0a</color>
+    <color name="amoled_search_bg">#0a0a0a</color>
+    <color name="amoled_search_text">#ffffff</color>
+    <color name="amoled_search_hint">#555555</color>
+    <color name="amoled_count_bg">#0a0a0a</color>
 </resources>

@@ -69,14 +69,18 @@ public class ApiClient {
             throw new Exception("HTTP " + status);
         }
 
-        HttpEntity entity = response.getEntity();
-        if (entity == null) {
-            throw new Exception("Empty response");
+        HttpEntity entity = null;
+        try {
+            entity = response.getEntity();
+            if (entity == null) {
+                throw new Exception("Empty response");
+            }
+            return readStream(entity.getContent());
+        } finally {
+            if (entity != null) {
+                try { entity.consumeContent(); } catch (Exception ignored) {}
+            }
         }
-
-        String result = readStream(entity.getContent());
-        entity.consumeContent();
-        return result;
     }
 
     public static ArrayList<AppInfo> getApps(String query) throws Exception {
@@ -171,31 +175,37 @@ public class ApiClient {
             throw new Exception("Download failed: HTTP " + status);
         }
 
-        HttpEntity entity = response.getEntity();
-        if (entity == null) {
-            throw new Exception("No data");
-        }
-
-        long total = entity.getContentLength();
-        InputStream is = entity.getContent();
-        FileOutputStream fos = new FileOutputStream(destination);
+        HttpEntity entity = null;
         try {
-            byte[] buf = new byte[8192];
-            int n;
-            long downloaded = 0;
-            long nextProgress = 0;
-            while ((n = is.read(buf)) != -1) {
-                fos.write(buf, 0, n);
-                downloaded += n;
-                if (progress != null && total > 0 && downloaded >= nextProgress) {
-                    progress.onProgress(downloaded, total);
-                    nextProgress = downloaded + 65536;
+            entity = response.getEntity();
+            if (entity == null) {
+                throw new Exception("No data");
+            }
+
+            long total = entity.getContentLength();
+            InputStream is = entity.getContent();
+            FileOutputStream fos = new FileOutputStream(destination);
+            try {
+                byte[] buf = new byte[8192];
+                int n;
+                long downloaded = 0;
+                long nextProgress = 0;
+                while ((n = is.read(buf)) != -1) {
+                    fos.write(buf, 0, n);
+                    downloaded += n;
+                    if (progress != null && total > 0 && downloaded >= nextProgress) {
+                        progress.onProgress(downloaded, total);
+                        nextProgress = downloaded + 65536;
+                    }
                 }
+            } finally {
+                try { fos.close(); } catch (Exception ignored) {}
+                try { is.close(); } catch (Exception ignored) {}
             }
         } finally {
-            try { fos.close(); } catch (Exception ignored) {}
-            try { is.close(); } catch (Exception ignored) {}
-            try { entity.consumeContent(); } catch (Exception ignored) {}
+            if (entity != null) {
+                try { entity.consumeContent(); } catch (Exception ignored) {}
+            }
         }
 
         return destination.getAbsolutePath();

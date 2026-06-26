@@ -3,21 +3,32 @@ package com.droidmarket;
 import java.io.File;
 import java.util.ArrayList;
 
+import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
+
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +38,7 @@ public class AppDetailActivity extends Activity {
     private String appName;
     private String appIcon;
     private String appPackage;
+    private String appAddedDate;
     private ImageLoader imageLoader;
 
     private TextView versionsHeader;
@@ -48,9 +60,12 @@ public class AppDetailActivity extends Activity {
             appName = intent.getStringExtra("app_name");
             appIcon = intent.getStringExtra("app_icon");
             appPackage = intent.getStringExtra("app_package");
+            appAddedDate = intent.getStringExtra("app_added_date");
 
             int downloads = intent.getIntExtra("app_downloads", 0);
             int versions = intent.getIntExtra("app_versions", 0);
+
+            addRecentlyViewed();
 
             imageLoader = new ImageLoader();
 
@@ -64,6 +79,16 @@ public class AppDetailActivity extends Activity {
 
             TextView pkgView = (TextView) findViewById(R.id.detail_package);
             pkgView.setText(String.valueOf(appPackage));
+
+            TextView dateView = (TextView) findViewById(R.id.detail_date);
+            if (appAddedDate != null && appAddedDate.length() > 0) {
+                String d = appAddedDate;
+                if (d.length() > 10) d = d.substring(0, 10);
+                dateView.setText("Added: " + d);
+                dateView.setVisibility(View.VISIBLE);
+            } else {
+                dateView.setVisibility(View.GONE);
+            }
 
             TextView versionsCountView = (TextView) findViewById(R.id.detail_versions_count);
             versionsCountView.setText(String.valueOf(versions));
@@ -84,6 +109,185 @@ public class AppDetailActivity extends Activity {
             }
         } catch (Exception e) {
             Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private boolean isFavorite() {
+        SharedPreferences prefs = getSharedPreferences("favorites", MODE_PRIVATE);
+        String raw = prefs.getString("list", "");
+        if (raw.length() > 0) {
+            String[] parts = raw.split("\\|");
+            for (String p : parts) {
+                if (p.equals(appPackage)) return true;
+            }
+        }
+        return false;
+    }
+
+    private void toggleFavorite() {
+        SharedPreferences prefs = getSharedPreferences("favorites", MODE_PRIVATE);
+        String raw = prefs.getString("list", "");
+        Set<String> set = new HashSet<String>();
+        if (raw.length() > 0) {
+            String[] parts = raw.split("\\|");
+            for (String p : parts) {
+                if (p.length() > 0) set.add(p);
+            }
+        }
+        if (set.contains(appPackage)) {
+            set.remove(appPackage);
+            Toast.makeText(this, "Removed from Favorites", Toast.LENGTH_SHORT).show();
+        } else {
+            set.add(appPackage);
+            Toast.makeText(this, "Added to Favorites", Toast.LENGTH_SHORT).show();
+        }
+        StringBuilder sb = new StringBuilder();
+        for (String p : set) {
+            if (sb.length() > 0) sb.append("|");
+            sb.append(p);
+        }
+        prefs.edit().putString("list", sb.toString()).commit();
+    }
+
+    private void addRecentlyViewed() {
+        SharedPreferences prefs = getSharedPreferences("lists", MODE_PRIVATE);
+        String raw = prefs.getString("recently_viewed", "");
+        StringBuilder sb = new StringBuilder(appPackage);
+        if (raw.length() > 0) {
+            String[] parts = raw.split("\\|");
+            int count = 0;
+            for (String p : parts) {
+                if (!p.equals(appPackage) && count < 19) {
+                    sb.append("|").append(p);
+                    count++;
+                }
+            }
+        }
+        prefs.edit().putString("recently_viewed", sb.toString()).commit();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu.add(0, 1, 0, isFavorite() ? "Unfavorite" : "Favorite").setIcon(android.R.drawable.ic_menu_myplaces);
+        menu.add(0, 2, 0, "Share Link").setIcon(android.R.drawable.ic_menu_share);
+        menu.add(0, 3, 0, "Open in Browser").setIcon(android.R.drawable.ic_menu_compass);
+        menu.add(0, 4, 0, "App Notes").setIcon(0);
+        menu.add(0, 5, 0, "Rate App").setIcon(0);
+        menu.add(0, 6, 0, "Share APK").setIcon(0);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        try {
+            menu.getItem(0).setTitle(isFavorite() ? "Unfavorite" : "Favorite");
+        } catch (Exception ignored) {}
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case 1: toggleFavorite(); return true;
+            case 2: shareApp(); return true;
+            case 3: openInBrowser(); return true;
+            case 4: showNotesDialog(); return true;
+            case 5: showRatingDialog(); return true;
+            case 6: shareApkFile(); return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void openInBrowser() {
+        try {
+            Intent i = new Intent(Intent.ACTION_VIEW);
+            i.setData(Uri.parse(ApiClient.getBaseUrl() + "/app/" + appPackage));
+            startActivity(i);
+        } catch (Exception e) {
+            Toast.makeText(this, "Cannot open browser", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void showNotesDialog() {
+        SharedPreferences prefs = getSharedPreferences("notes", MODE_PRIVATE);
+        final String saved = prefs.getString(appPackage, "");
+
+        AlertDialog.Builder b = new AlertDialog.Builder(this);
+        b.setTitle("Notes for " + appName);
+        final EditText input = new EditText(this);
+        input.setText(saved);
+        input.setHint("Write a note...");
+        b.setView(input);
+        b.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface d, int w) {
+                String note = input.getText().toString().trim();
+                getSharedPreferences("notes", MODE_PRIVATE).edit().putString(appPackage, note).commit();
+                Toast.makeText(AppDetailActivity.this, note.length() > 0 ? "Note saved" : "Note removed", Toast.LENGTH_SHORT).show();
+            }
+        });
+        b.setNegativeButton("Cancel", null);
+        b.show();
+    }
+
+    private void showRatingDialog() {
+        SharedPreferences prefs = getSharedPreferences("ratings", MODE_PRIVATE);
+        final int current = prefs.getInt(appPackage, 0);
+
+        AlertDialog.Builder b = new AlertDialog.Builder(this);
+        b.setTitle("Rate " + appName);
+        final RatingBar ratingBar = new RatingBar(this);
+        ratingBar.setNumStars(5);
+        ratingBar.setStepSize(1.0f);
+        if (current > 0) ratingBar.setRating(current);
+        ratingBar.setLayoutParams(new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        b.setView(ratingBar);
+        b.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface d, int w) {
+                int rating = (int) ratingBar.getRating();
+                getSharedPreferences("ratings", MODE_PRIVATE).edit().putInt(appPackage, rating).commit();
+                Toast.makeText(AppDetailActivity.this,
+                        rating > 0 ? "Rated: " + rating + "/5" : "Rating removed",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+        b.setNegativeButton("Cancel", null);
+        b.show();
+    }
+
+    private void shareApkFile() {
+        File dir = new File(Environment.getExternalStorageDirectory(), "Download");
+        final String prefix = (appPackage != null ? appPackage : "app") + "_";
+        File[] files = dir.listFiles();
+        if (files != null) {
+            for (File f : files) {
+                if (f.getName().startsWith(prefix) && f.getName().endsWith(".apk")) {
+                    try {
+                        Intent share = new Intent(Intent.ACTION_SEND);
+                        share.setType("application/vnd.android.package-archive");
+                        share.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(f));
+                        startActivity(Intent.createChooser(share, "Share APK"));
+                        return;
+                    } catch (Exception e) {
+                        Toast.makeText(this, "Share failed", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                }
+            }
+        }
+        Toast.makeText(this, "No APK file found. Download it first.", Toast.LENGTH_SHORT).show();
+    }
+
+    private void shareApp() {
+        try {
+            Intent share = new Intent(Intent.ACTION_SEND);
+            share.setType("text/plain");
+            String text = appName + " (" + appPackage + ") — DroidMarket\n" +
+                    ApiClient.getBaseUrl() + "/app/" + appPackage;
+            share.putExtra(Intent.EXTRA_TEXT, text);
+            startActivity(Intent.createChooser(share, "Share App"));
+        } catch (Exception e) {
+            Toast.makeText(this, "Share failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -242,6 +446,9 @@ public class AppDetailActivity extends Activity {
             } catch (Exception e) {
                 if (convertView == null) {
                     convertView = new View(parent.getContext());
+                    convertView.setLayoutParams(new ViewGroup.LayoutParams(
+                            ViewGroup.LayoutParams.FILL_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT));
                 }
                 return convertView;
             }
@@ -268,6 +475,7 @@ public class AppDetailActivity extends Activity {
         private ProgressDialog dialog;
         private String error;
         private long totalBytes;
+        private AppVersion currentVer;
 
         @Override
         protected void onPreExecute() {
@@ -284,7 +492,8 @@ public class AppDetailActivity extends Activity {
 
         @Override
         protected String doInBackground(AppVersion... params) {
-            AppVersion ver = params[0];
+            currentVer = params[0];
+            AppVersion ver = currentVer;
             int maxRetries = 3;
             for (int attempt = 0; attempt < maxRetries; attempt++) {
                 if (isCancelled()) return null;
@@ -343,6 +552,8 @@ public class AppDetailActivity extends Activity {
             if (isFinishing()) return;
 
             if (path != null) {
+                DownloadsActivity.addToHistory(AppDetailActivity.this,
+                        appPackage, appName, currentVer.version, path);
                 try {
                     Intent intent = new Intent(Intent.ACTION_VIEW);
                     intent.setDataAndType(Uri.fromFile(new File(path)),

@@ -24,7 +24,7 @@ public class ImageLoader {
         cache = new HashMap<String, Bitmap>();
     }
 
-    public void clearCache() {
+    public synchronized void clearCache() {
         cache.clear();
     }
 
@@ -120,10 +120,12 @@ public class ImageLoader {
             Object tag = view.getTag();
             if (tag != this) return;
 
-            if (cache.size() >= MAX_CACHE) {
-                cache.clear();
+            synchronized (ImageLoader.this) {
+                if (cache.size() >= MAX_CACHE) {
+                    cache.clear();
+                }
+                cache.put(url, bm);
             }
-            cache.put(url, bm);
             view.setImageBitmap(bm);
         }
     }

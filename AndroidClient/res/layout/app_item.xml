@@ -86,8 +86,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="?attr/themeTextTertiary"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    android:layout_marginRight="12dp" />
+                <TextView
+                    android:id="@+id/app_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="?attr/themeTextTertiary"
+                    android:textSize="11sp" />
             </LinearLayout>
+
         </LinearLayout>
     </LinearLayout>
 

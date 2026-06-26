@@ -9,12 +9,15 @@ public class ThemeManager {
 
     public static final String THEME_HOLO = "holo";
     public static final String THEME_MATERIAL = "material";
+    public static final String THEME_AMOLED = "amoled";
 
     public static void apply(Activity activity) {
         SharedPreferences prefs = activity.getSharedPreferences(PREFS_NAME, Activity.MODE_PRIVATE);
         String theme = prefs.getString(KEY_THEME, THEME_HOLO);
         if (THEME_MATERIAL.equals(theme)) {
             activity.setTheme(R.style.Theme_DroidMarket_Material);
+        } else if (THEME_AMOLED.equals(theme)) {
+            activity.setTheme(R.style.Theme_DroidMarket_AMOLED);
         } else {
             activity.setTheme(R.style.Theme_DroidMarket);
         }
@@ -30,7 +33,9 @@ public class ThemeManager {
         prefs.edit().putString(KEY_THEME, theme).commit();
     }
 
-    public static boolean isMaterial(Activity activity) {
-        return THEME_MATERIAL.equals(getCurrent(activity));
+    public static String nextTheme(String current) {
+        if (THEME_MATERIAL.equals(current)) return THEME_AMOLED;
+        if (THEME_AMOLED.equals(current)) return THEME_HOLO;
+        return THEME_MATERIAL;
     }
 }

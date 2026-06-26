@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:background="?attr/themeBackground">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="48dp"
+        android:background="?attr/themeActionbarBg"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Installed Apps"
+            android:textColor="?attr/themeTextPrimary"
+            android:textSize="18sp" />
+
+        <EditText
+            android:id="@+id/installed_search"
+            android:layout_width="120dp"
+            android:layout_height="32dp"
+            android:hint="Filter..."
+            android:background="?attr/themeSearchBg"
+            android:textColor="?attr/themeSearchText"
+            android:textColorHint="?attr/themeSearchHint"
+            android:textSize="12sp"
+            android:singleLine="true"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp" />
+    </LinearLayout>
+
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:divider="?attr/themeDivider"
+        android:dividerHeight="1px"
+        android:listSelector="@android:drawable/list_selector_background"
+        android:cacheColorHint="?attr/themeBackground" />
+
+    <TextView
+        android:id="@android:id/empty"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:text="No apps found"
+        android:textSize="14sp"
+        android:textColor="?attr/themeTextTertiary" />
+</LinearLayout>
