@@ -13,11 +13,11 @@ $RES_DIR = "$PROJECT_DIR\res"
 $ANDROID_JAR = "$PLATFORM\android.jar"
 $AAPT = "$BUILD_TOOLS_OLD\aapt.exe"
 $D8_JAR = "$BUILD_TOOLS\lib\d8.jar"
+$APKSIGNER_JAR = "$BUILD_TOOLS\lib\apksigner.jar"
 $ZIPALIGN = "$BUILD_TOOLS_OLD\zipalign.exe"
 $JAVAC = "$JAVA_HOME\bin\javac.exe"
 $JAVA_CMD = "$JAVA_HOME\bin\java.exe"
 $KEYTOOL = "$JAVA_HOME\bin\keytool.exe"
-$JARSIGNER = "$JAVA_HOME\bin\jarsigner.exe"
 
 $env:JAVA_HOME = $JAVA_HOME
 
@@ -61,14 +61,9 @@ if (-not (Test-Path "$PROJECT_DIR\debug.keystore")) {
     & $KEYTOOL -genkey -v -keystore "$PROJECT_DIR\debug.keystore" -alias androiddebugkey -storepass android -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
 }
 
-Write-Host "=== Step 9: Signing APK with SHA1 (Android 1.6 compatible) ==="
-$SEC_OVERRIDE = "$env:TEMP\java.security.override"
-@"
-jdk.jar.disabledAlgorithms=
-jdk.security.legacyAlgorithms=SHA1withRSA, SHA1
-"@ | Set-Content -Path $SEC_OVERRIDE -Encoding ASCII -Force
-& $JARSIGNER -J"-Djava.security.properties=$SEC_OVERRIDE" -keystore "$PROJECT_DIR\debug.keystore" -storepass android -keypass android -sigalg SHA1withRSA -digestalg SHA1 -signedjar "$BUILD_DIR\signed.apk" "$BUILD_DIR\unsigned.apk" androiddebugkey
-if ($LASTEXITCODE -ne 0) { throw "jarsigner failed" }
+Write-Host "=== Step 9: Signing APK (v1 only, compatible with all API levels) ==="
+& $JAVA_CMD -jar "$APKSIGNER_JAR" sign --v1-signing-enabled true --v2-signing-enabled false --v3-signing-enabled false --ks "$PROJECT_DIR\debug.keystore" --ks-pass pass:android --ks-key-alias androiddebugkey --out "$BUILD_DIR\signed.apk" "$BUILD_DIR\unsigned.apk"
+if ($LASTEXITCODE -ne 0) { throw "apksigner failed" }
 
 Write-Host "=== Step 10: Aligning APK ==="
 & $ZIPALIGN -f 4 "$BUILD_DIR\signed.apk" "$BUILD_DIR\DroidMarket.apk"
