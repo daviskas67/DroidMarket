@@ -3,63 +3,90 @@ import subprocess, time, sys, os, socket, logging
 logging.basicConfig(level=logging.INFO, format='[%(asctime)s] %(message)s', datefmt='%H:%M:%S')
 log = logging.getLogger("watchdog")
 
-SERVER_SCRIPT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "server.py")
+BASE = os.path.dirname(os.path.abspath(__file__))
+SERVER_SCRIPT = os.path.join(BASE, "server.py")
 CHECK_INTERVAL = 15
-SERVER_PORT = 5000
-proc = None
+SSH_SUBDOMAIN = "barbaros"
+SSH_HOST = "serveo.net"
+server_proc = None
+ssh_proc = None
 
-def is_port_open(port):
+def port_open(port, host="127.0.0.1"):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
         s.settimeout(3)
-        s.connect(("127.0.0.1", port))
+        s.connect((host, port))
         s.close()
         return True
     except: return False
 
-def is_http_alive():
+def http_ok(port=5000):
     try:
-        import urllib.request
-        urllib.request.urlopen("http://127.0.0.1:%d/" % SERVER_PORT, timeout=5)
-        return True
+        import http.client
+        c = http.client.HTTPConnection("127.0.0.1", port, timeout=5)
+        c.request("GET", "/")
+        r = c.getresponse()
+        c.close()
+        return r.status == 200
     except: return False
 
 def start_server():
-    global proc
-    if proc is not None:
-        proc.kill()
-        proc.wait()
+    global server_proc
+    if server_proc is not None:
+        server_proc.kill()
+        server_proc.wait()
     log.info("Starting server...")
-    proc = subprocess.Popen([sys.executable, SERVER_SCRIPT],
+    server_proc = subprocess.Popen([sys.executable, SERVER_SCRIPT],
         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     time.sleep(3)
-    if is_port_open(SERVER_PORT):
-        log.info("Server started (pid %d)" % proc.pid)
+    if port_open(5000):
+        log.info("Server started (pid %d)" % server_proc.pid)
     else:
         log.warning("Server may not be ready yet")
 
-def check_ssh_tunnel():
-    try:
-        r = subprocess.run(["ssh", "-O", "check", "serveo"],
-            capture_output=True, timeout=5, text=True)
-        return r.returncode == 0
-    except: return None
+def start_ssh():
+    global ssh_proc
+    if ssh_proc is not None:
+        ssh_proc.kill()
+        ssh_proc.wait()
+    log.info("Connecting SSH tunnel %s.serveousercontent.com ..." % SSH_SUBDOMAIN)
+    ssh_proc = subprocess.Popen([
+        "ssh", "-o", "StrictHostKeyChecking=no",
+        "-o", "ServerAliveInterval=30",
+        "-o", "ExitOnForwardFailure=yes",
+        "-R", "%s:80:127.0.0.1:5000" % SSH_SUBDOMAIN,
+        SSH_HOST
+    ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    time.sleep(5)
+    if ssh_proc.poll() is None:
+        log.info("SSH tunnel connected (pid %d)" % ssh_proc.pid)
+    else:
+        log.warning("SSH tunnel failed to connect")
+
+def check_ssh():
+    if ssh_proc is None: return False
+    return ssh_proc.poll() is None
 
 if __name__ == "__main__":
     log.info("Watchdog started (check every %ds)" % CHECK_INTERVAL)
 
-    if is_port_open(SERVER_PORT):
+    if port_open(5000):
         log.info("Server already running")
     else:
         start_server()
 
+    if check_ssh():
+        log.info("SSH tunnel already running")
+    else:
+        start_ssh()
+
     while True:
         time.sleep(CHECK_INTERVAL)
 
-        if not is_http_alive():
+        if not http_ok():
             log.warning("Server not responding, restarting...")
             start_server()
-        else:
-            ssh = check_ssh_tunnel()
-            if ssh is False:
-                log.warning("SSH tunnel to serveo may be down")
+
+        if not check_ssh():
+            log.warning("SSH tunnel down, reconnecting...")
+            start_ssh()
