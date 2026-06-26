@@ -1,5 +1,6 @@
 package com.droidmarket;
 
+import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -12,8 +13,6 @@ import android.widget.ImageView;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.HttpConnectionParams;
 
 public class ImageLoader {
 
@@ -23,6 +22,10 @@ public class ImageLoader {
 
     public ImageLoader() {
         cache = new HashMap<String, Bitmap>();
+    }
+
+    public void clearCache() {
+        cache.clear();
     }
 
     public void load(String url, ImageView view) {
@@ -60,13 +63,9 @@ public class ImageLoader {
 
         @Override
         protected Bitmap doInBackground(Void... params) {
-            DefaultHttpClient client = new DefaultHttpClient();
-            HttpConnectionParams.setConnectionTimeout(client.getParams(), 5000);
-            HttpConnectionParams.setSoTimeout(client.getParams(), 10000);
-
             try {
                 HttpGet request = new HttpGet(url);
-                HttpResponse response = client.execute(request);
+                HttpResponse response = ApiClient.getSharedClient().execute(request);
                 if (response.getStatusLine().getStatusCode() != 200) {
                     return null;
                 }
@@ -75,7 +74,7 @@ public class ImageLoader {
                     return null;
                 }
 
-                InputStream is = entity.getContent();
+                InputStream is = new BufferedInputStream(entity.getContent(), 8192);
                 try {
                     BitmapFactory.Options opts = new BitmapFactory.Options();
                     opts.inSampleSize = 2;
@@ -107,8 +106,6 @@ public class ImageLoader {
                 }
             } catch (Exception e) {
                 return null;
-            } finally {
-                try { client.getConnectionManager().shutdown(); } catch (Exception ignored) {}
             }
         }
 

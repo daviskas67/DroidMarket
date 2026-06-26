@@ -12,6 +12,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.ClipboardManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -69,6 +71,24 @@ public class MainActivity extends ListActivity {
             }
         });
 
+        getListView().setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            public boolean onItemLongClick(AdapterView<?> parent, View view,
+                    int position, long id) {
+                AppInfo app = adapter.getItem(position);
+                if (app != null && app.packageName != null
+                        && app.packageName.length() > 0) {
+                    ClipboardManager cm = (ClipboardManager)
+                            getSystemService(CLIPBOARD_SERVICE);
+                    cm.setText(app.packageName);
+                    Toast.makeText(MainActivity.this,
+                            "Copied: " + app.packageName,
+                            Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                return false;
+            }
+        });
+
         loadApps();
     }
 
@@ -99,6 +119,10 @@ public class MainActivity extends ListActivity {
 
     private void loadApps() {
         retryButton.setVisibility(View.GONE);
+        if (loadAppsTask != null) {
+            loadAppsTask.cancel(true);
+            loadAppsTask = null;
+        }
         loadAppsTask = new LoadAppsTask();
         loadAppsTask.execute();
     }
@@ -128,11 +152,13 @@ public class MainActivity extends ListActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add(0, 1, 0, "Sort by Name").setIcon(android.R.drawable.ic_menu_sort_alphabetically);
         menu.add(0, 2, 0, "Sort by Downloads").setIcon(android.R.drawable.ic_menu_sort_by_size);
-        menu.add(0, 3, 0, "About").setIcon(android.R.drawable.ic_menu_info_details);
-        menu.add(0, 4, 0, "Theme: " + (ThemeManager.isMaterial(this) ? "Material" : "Holo"))
+        menu.add(0, 3, 0, "Refresh").setIcon(android.R.drawable.ic_menu_revert);
+        menu.add(0, 4, 0, "About").setIcon(android.R.drawable.ic_menu_info_details);
+        menu.add(0, 5, 0, "Theme: " + (ThemeManager.isMaterial(this) ? "Material" : "Holo"))
                 .setIcon(android.R.drawable.ic_menu_gallery);
-        menu.add(0, 5, 0, "Server: " + ServerManager.getActiveName(this))
+        menu.add(0, 6, 0, "Server: " + ServerManager.getActiveName(this))
                 .setIcon(android.R.drawable.ic_menu_manage);
+        menu.add(0, 7, 0, "Clear Cache").setIcon(0);
         return true;
     }
 
@@ -141,18 +167,23 @@ public class MainActivity extends ListActivity {
         switch (item.getItemId()) {
             case 1: sortMode = 0; sortApps(); return true;
             case 2: sortMode = 1; sortApps(); return true;
-            case 3:
+            case 3: loadApps(); return true;
+            case 4:
                 startActivity(new Intent(MainActivity.this, AboutActivity.class));
                 return true;
-            case 4:
+            case 5:
                 String newTheme = ThemeManager.isMaterial(this)
                         ? ThemeManager.THEME_HOLO : ThemeManager.THEME_MATERIAL;
                 ThemeManager.set(this, newTheme);
                 Toast.makeText(this, "Theme: " + (ThemeManager.isMaterial(this) ? "Material" : "Holo")
                         + " (restart required)", Toast.LENGTH_SHORT).show();
                 return true;
-            case 5:
+            case 6:
                 showServerDialog();
+                return true;
+            case 7:
+                imageLoader.clearCache();
+                Toast.makeText(this, "Image cache cleared", Toast.LENGTH_SHORT).show();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -180,6 +211,11 @@ public class MainActivity extends ListActivity {
                 loadApps();
             }
         });
+        b.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface d, int which) {
+                showDeleteServerDialog();
+            }
+        });
         b.setNeutralButton("Add Server", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface d, int which) {
                 showAddServerDialog();
@@ -187,6 +223,56 @@ public class MainActivity extends ListActivity {
         });
         b.setNegativeButton("Cancel", null);
         b.show();
+    }
+
+    private void showDeleteServerDialog() {
+        final ArrayList<ServerConfig> servers = ServerManager.getServers(this);
+        if (servers.size() <= 1) {
+            Toast.makeText(this, "Cannot delete the last server",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        final String[] names = new String[servers.size()];
+        for (int i = 0; i < servers.size(); i++) {
+            names[i] = servers.get(i).name + "  (" + servers.get(i).url + ")";
+        }
+        new AlertDialog.Builder(this)
+                .setTitle("Delete Server")
+                .setItems(names, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface d, int which) {
+                        confirmDeleteServer(which);
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void confirmDeleteServer(final int index) {
+        final ArrayList<ServerConfig> servers = ServerManager.getServers(this);
+        final ServerConfig target = servers.get(index);
+        new AlertDialog.Builder(this)
+                .setTitle("Delete Server")
+                .setMessage("Delete \"" + target.name + "\"?")
+                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface d, int which) {
+                        servers.remove(index);
+                        ServerManager.saveServers(MainActivity.this, servers);
+                        String active = ServerManager.getActiveUrl(MainActivity.this);
+                        if (target.url.equals(active)) {
+                            ServerConfig first = servers.get(0);
+                            ServerManager.setActiveUrl(MainActivity.this, first.url);
+                            Toast.makeText(MainActivity.this,
+                                    "Switched to: " + first.name,
+                                    Toast.LENGTH_SHORT).show();
+                            loadApps();
+                        }
+                        Toast.makeText(MainActivity.this,
+                                "Deleted: " + target.name,
+                                Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 
     private void showAddServerDialog() {
@@ -238,17 +324,22 @@ public class MainActivity extends ListActivity {
 
         @Override
         protected void onPreExecute() {
-            dialog = ProgressDialog.show(MainActivity.this, "",
-                    getString(R.string.loading), true, false);
+            try {
+                dialog = ProgressDialog.show(MainActivity.this, "",
+                        getString(R.string.loading), true, false);
+            } catch (Exception e) {
+                dialog = null;
+            }
         }
 
         @Override
         protected ArrayList<AppInfo> doInBackground(Void... params) {
             int maxRetries = 3;
             for (int attempt = 0; attempt < maxRetries; attempt++) {
+                if (isCancelled()) return null;
                 if (attempt > 0) {
                     publishProgress("Retrying (" + attempt + "/" + (maxRetries - 1) + ")...");
-                    try { Thread.sleep(2000); } catch (InterruptedException e) { break; }
+                    try { Thread.sleep(2000); } catch (InterruptedException e) { return null; }
                 }
                 try {
                     return ApiClient.getApps(null);
@@ -275,9 +366,13 @@ public class MainActivity extends ListActivity {
 
         @Override
         protected void onPostExecute(ArrayList<AppInfo> result) {
+            if (isCancelled()) return;
+
             if (dialog != null && dialog.isShowing()) {
-                dialog.dismiss();
+                try { dialog.dismiss(); } catch (Exception ignored) {}
             }
+
+            if (isFinishing()) return;
 
             if (result != null) {
                 allApps = result;
@@ -286,7 +381,8 @@ public class MainActivity extends ListActivity {
                 retryButton.setVisibility(View.GONE);
 
                 if (result.size() == 0) {
-                    showError("No apps on server");
+                    Toast.makeText(MainActivity.this, "No apps on server",
+                            Toast.LENGTH_LONG).show();
                 }
             } else {
                 showError(error != null ? error : "Connection failed");
@@ -296,11 +392,14 @@ public class MainActivity extends ListActivity {
     }
 
     private void showError(String msg) {
-        new AlertDialog.Builder(this)
-                .setTitle("Error")
-                .setMessage(msg)
-                .setPositiveButton("OK", null)
-                .show();
+        if (isFinishing()) return;
+        try {
+            new AlertDialog.Builder(this)
+                    .setTitle("Error")
+                    .setMessage(msg)
+                    .setPositiveButton("OK", null)
+                    .show();
+        } catch (Exception ignored) {}
     }
 
     private static class AppListAdapter extends BaseAdapter {
@@ -346,6 +445,7 @@ public class MainActivity extends ListActivity {
                 holder.icon = (ImageView) convertView.findViewById(R.id.app_icon);
                 holder.name = (TextView) convertView.findViewById(R.id.app_name);
                 holder.pkg = (TextView) convertView.findViewById(R.id.app_package);
+                holder.type = (TextView) convertView.findViewById(R.id.app_type);
                 holder.version = (TextView) convertView.findViewById(R.id.app_version);
                 holder.size = (TextView) convertView.findViewById(R.id.app_size);
                 holder.android = (TextView) convertView.findViewById(R.id.app_android);
@@ -354,9 +454,18 @@ public class MainActivity extends ListActivity {
                 holder = (ViewHolder) convertView.getTag();
             }
 
+            if (position >= apps.size()) return convertView;
             AppInfo app = apps.get(position);
             holder.name.setText(app.name);
             holder.pkg.setText(app.packageName);
+
+            if (app.type != null && !app.type.equals("apk")) {
+                holder.type.setVisibility(View.VISIBLE);
+                holder.type.setText(app.type.toUpperCase());
+            } else {
+                holder.type.setVisibility(View.GONE);
+            }
+
             holder.version.setText("v" + app.version);
             holder.size.setText(app.sizeFormatted);
             holder.android.setText("Android " + app.androidVer + "+");
@@ -375,6 +484,7 @@ public class MainActivity extends ListActivity {
             ImageView icon;
             TextView name;
             TextView pkg;
+            TextView type;
             TextView version;
             TextView size;
             TextView android;

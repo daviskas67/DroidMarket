@@ -2,9 +2,6 @@ package com.droidmarket;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 public class ThemeManager {
     private static final String PREFS_NAME = "droidmarket";

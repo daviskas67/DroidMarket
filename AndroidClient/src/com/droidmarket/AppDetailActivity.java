@@ -102,6 +102,10 @@ public class AppDetailActivity extends Activity {
 
     private void loadVersions() {
         versionsHeader.setText("Loading versions...");
+        if (loadTask != null) {
+            loadTask.cancel(true);
+            loadTask = null;
+        }
         loadTask = new LoadVersionsTask();
         loadTask.execute(appId);
     }
@@ -152,6 +156,8 @@ public class AppDetailActivity extends Activity {
                 try { dialog.dismiss(); } catch (Exception ignored) {}
             }
 
+            if (isFinishing()) return;
+
             if (result != null) {
                 adapter.setData(result);
                 versionsHeader.setText("Versions (" + result.size() + ")");
@@ -168,11 +174,23 @@ public class AppDetailActivity extends Activity {
         private Context context;
         private ArrayList<AppVersion> versions;
         private LayoutInflater inflater;
+        private View.OnClickListener clickListener;
 
         public VersionListAdapter(Context context) {
             this.context = context;
             this.versions = new ArrayList<AppVersion>();
             this.inflater = LayoutInflater.from(context);
+            this.clickListener = new View.OnClickListener() {
+                public void onClick(View v) {
+                    Object tag = v.getTag();
+                    if (tag instanceof Integer) {
+                        int pos = ((Integer) tag).intValue();
+                        if (pos >= 0 && pos < versions.size()) {
+                            startDownload(versions.get(pos));
+                        }
+                    }
+                }
+            };
         }
 
         public void setData(ArrayList<AppVersion> data) {
@@ -207,21 +225,18 @@ public class AppDetailActivity extends Activity {
                             .findViewById(R.id.ver_android);
                     holder.downloadBtn = (Button) convertView
                             .findViewById(R.id.ver_download);
+                    holder.downloadBtn.setOnClickListener(clickListener);
                     convertView.setTag(holder);
                 } else {
                     holder = (ViewHolder) convertView.getTag();
                 }
 
-                final AppVersion ver = versions.get(position);
+                if (position >= versions.size()) return convertView;
+                AppVersion ver = versions.get(position);
                 holder.version.setText("v" + ver.version);
                 holder.size.setText(ver.sizeFormatted);
                 holder.android.setText("Android " + ver.androidVer + "+");
-
-                holder.downloadBtn.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        startDownload(ver);
-                    }
-                });
+                holder.downloadBtn.setTag(Integer.valueOf(position));
 
                 return convertView;
             } catch (Exception e) {
@@ -241,6 +256,10 @@ public class AppDetailActivity extends Activity {
     }
 
     private void startDownload(final AppVersion ver) {
+        if (downloadTask != null) {
+            downloadTask.cancel(true);
+            downloadTask = null;
+        }
         downloadTask = new DownloadTask();
         downloadTask.execute(ver);
     }
@@ -320,6 +339,8 @@ public class AppDetailActivity extends Activity {
             if (dialog != null && dialog.isShowing()) {
                 try { dialog.dismiss(); } catch (Exception ignored) {}
             }
+
+            if (isFinishing()) return;
 
             if (path != null) {
                 try {

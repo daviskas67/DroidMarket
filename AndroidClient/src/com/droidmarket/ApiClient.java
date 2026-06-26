@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.params.ConnManagerParams;
+import org.apache.http.conn.params.ConnPerRouteBean;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
@@ -18,6 +20,7 @@ import org.json.JSONObject;
 public class ApiClient {
 
     private static String BASE_URL = "http://barbaros.serveousercontent.com";
+    private static DefaultHttpClient sharedClient;
 
     public static void setBaseUrl(String url) {
         if (url != null && url.length() > 0) {
@@ -27,6 +30,18 @@ public class ApiClient {
 
     public static String getBaseUrl() {
         return BASE_URL;
+    }
+
+    public static DefaultHttpClient getSharedClient() {
+        if (sharedClient == null) {
+            sharedClient = new DefaultHttpClient();
+            HttpParams params = sharedClient.getParams();
+            HttpConnectionParams.setConnectionTimeout(params, 30000);
+            HttpConnectionParams.setSoTimeout(params, 120000);
+            ConnManagerParams.setMaxTotalConnections(params, 20);
+            ConnManagerParams.setMaxConnectionsPerRoute(params, new ConnPerRouteBean(10));
+        }
+        return sharedClient;
     }
 
     private static String readStream(InputStream is) throws Exception {
@@ -44,32 +59,24 @@ public class ApiClient {
     }
 
     private static String httpGet(String url) throws Exception {
-        DefaultHttpClient client = new DefaultHttpClient();
-        HttpParams params = client.getParams();
-        HttpConnectionParams.setConnectionTimeout(params, 15000);
-        HttpConnectionParams.setSoTimeout(params, 30000);
+        DefaultHttpClient client = getSharedClient();
+        HttpGet request = new HttpGet(url);
+        request.setHeader("User-Agent", "DroidMarket/1.0 (Android 1.6)");
+        HttpResponse response = client.execute(request);
 
-        try {
-            HttpGet request = new HttpGet(url);
-            request.setHeader("User-Agent", "DroidMarket/1.0 (Android 1.6)");
-            HttpResponse response = client.execute(request);
-
-            int status = response.getStatusLine().getStatusCode();
-            if (status != 200) {
-                throw new Exception("HTTP " + status);
-            }
-
-            HttpEntity entity = response.getEntity();
-            if (entity == null) {
-                throw new Exception("Empty response");
-            }
-
-            String result = readStream(entity.getContent());
-            entity.consumeContent();
-            return result;
-        } finally {
-            try { client.getConnectionManager().shutdown(); } catch (Exception ignored) {}
+        int status = response.getStatusLine().getStatusCode();
+        if (status != 200) {
+            throw new Exception("HTTP " + status);
         }
+
+        HttpEntity entity = response.getEntity();
+        if (entity == null) {
+            throw new Exception("Empty response");
+        }
+
+        String result = readStream(entity.getContent());
+        entity.consumeContent();
+        return result;
     }
 
     public static ArrayList<AppInfo> getApps(String query) throws Exception {
@@ -154,51 +161,44 @@ public class ApiClient {
             File destination, DownloadProgress progress) throws Exception {
         String url = getDownloadUrl(appId, version);
 
-        DefaultHttpClient client = new DefaultHttpClient();
-        HttpParams params = client.getParams();
-        HttpConnectionParams.setConnectionTimeout(params, 30000);
-        HttpConnectionParams.setSoTimeout(params, 120000);
-
+        DefaultHttpClient client = getSharedClient();
         HttpGet request = new HttpGet(url);
         request.setHeader("User-Agent", "DroidMarket/1.0 (Android 1.6)");
+        HttpResponse response = client.execute(request);
 
-        try {
-            HttpResponse response = client.execute(request);
-
-            int status = response.getStatusLine().getStatusCode();
-            if (status != 200) {
-                throw new Exception("Download failed: HTTP " + status);
-            }
-
-            HttpEntity entity = response.getEntity();
-            if (entity == null) {
-                throw new Exception("No data");
-            }
-
-            long total = entity.getContentLength();
-            InputStream is = entity.getContent();
-            FileOutputStream fos = new FileOutputStream(destination);
-            try {
-                byte[] buf = new byte[8192];
-                int n;
-                long downloaded = 0;
-                while ((n = is.read(buf)) != -1) {
-                    fos.write(buf, 0, n);
-                    downloaded += n;
-                    if (progress != null && total > 0) {
-                        progress.onProgress(downloaded, total);
-                    }
-                }
-            } finally {
-                try { fos.close(); } catch (Exception ignored) {}
-                try { is.close(); } catch (Exception ignored) {}
-                try { entity.consumeContent(); } catch (Exception ignored) {}
-            }
-
-            return destination.getAbsolutePath();
-        } finally {
-            try { client.getConnectionManager().shutdown(); } catch (Exception ignored) {}
+        int status = response.getStatusLine().getStatusCode();
+        if (status != 200) {
+            throw new Exception("Download failed: HTTP " + status);
         }
+
+        HttpEntity entity = response.getEntity();
+        if (entity == null) {
+            throw new Exception("No data");
+        }
+
+        long total = entity.getContentLength();
+        InputStream is = entity.getContent();
+        FileOutputStream fos = new FileOutputStream(destination);
+        try {
+            byte[] buf = new byte[8192];
+            int n;
+            long downloaded = 0;
+            long nextProgress = 0;
+            while ((n = is.read(buf)) != -1) {
+                fos.write(buf, 0, n);
+                downloaded += n;
+                if (progress != null && total > 0 && downloaded >= nextProgress) {
+                    progress.onProgress(downloaded, total);
+                    nextProgress = downloaded + 65536;
+                }
+            }
+        } finally {
+            try { fos.close(); } catch (Exception ignored) {}
+            try { is.close(); } catch (Exception ignored) {}
+            try { entity.consumeContent(); } catch (Exception ignored) {}
+        }
+
+        return destination.getAbsolutePath();
     }
 
     private static String formatSize(long bytes) {
