@@ -1,5 +1,10 @@
 # DroidMarket
 
+Having fun, Sonic?
+I hope you enjoyed watching all of those sealed fates
+You knew what was going to happen, yet you just watched, didn’t cha?
+YOU LEAD THEM RIGHT TO ME
+
 Private APK store with a web frontend and an Android 1.6 (Donut) client.
 
 ## Features
